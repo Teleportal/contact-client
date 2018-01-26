@@ -1,0 +1,3 @@
+module ContactsViews
+
+end
