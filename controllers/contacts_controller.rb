@@ -8,8 +8,8 @@ module ContactsController
     contacts_hashes.each do |contact|
       contacts << Contact.new(contact)
     end
-    
-    puts JSON.pretty_generate(contact)
+
+    contacts_index_view(contacts)
   end
 
   def contacts_show
@@ -17,9 +17,10 @@ module ContactsController
     input_id = gets.chomp
 
     response = Unirest.get(@url + "/#{input_id}")
-    contact = response.body
+    contact_hash = response.body
+    contact = Contact.new(contact_hash)
 
-    puts JSON.pretty_generate(contact)
+    contact_show_view(contact)
   end
 
   def contacts_create
@@ -44,9 +45,10 @@ module ContactsController
                             parameters: client_params
                             )
     if response.code == 200
-      new_contact = response.body
+      new_contact_hash = response.body
+      new_contact = Contact.new(new_contact_hash)
 
-      puts JSON.pretty_generate(new_contact)
+      contact_show_view(new_contact)
     else
       errors = response.body["errors"]
       errors.each do |error|
@@ -85,9 +87,10 @@ module ContactsController
                             )
 
     if response.code == 200
-      updated_contact = response.body
+      updated_contact_hash = response.body
+      updated_contact = Contact.new(updated_contact_hash)
 
-      puts JSON.pretty_generate(updated_contact)
+      contact_show_view(updated_contact)
     else
       errors = response.body["errors"]
       errors.each do |error|
